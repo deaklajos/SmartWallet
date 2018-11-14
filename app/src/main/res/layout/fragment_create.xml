@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:stretchColumns="1">
+
+    <TableRow>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_column="1"
+            android:gravity="end"
+            android:text="@string/labeldescription" />
+
+        <EditText
+            android:id="@+id/add_description"
+            android:width="200dp"/>
+
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_column="1"
+            android:gravity="end"
+            android:text="@string/labelType" />
+
+        <Spinner
+            android:id="@+id/spinnerType"
+            android:width="200dp" />
+    </TableRow>
+
+    <TableRow>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_column="1"
+            android:gravity="end"
+            android:text="@string/labelAmount" />
+
+        <EditText
+            android:id="@+id/amount"
+            android:width="200dp"
+            android:inputType="numberSigned"
+            android:text="" />
+
+    </TableRow>
+
+    <TableRow>
+
+        <Button
+            android:id="@+id/btnOK"
+            android:layout_width="wrap_content"
+            android:layout_column="1"
+            android:gravity="end"
+            android:text="@string/btnOk" />
+
+        <Button
+            android:id="@+id/btnCancelCreateTodo"
+            android:layout_width="wrap_content"
+            android:gravity="left"
+            android:text="@string/btnCancel" />
+
+    </TableRow>
+
+</TableLayout>

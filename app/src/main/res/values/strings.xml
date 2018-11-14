@@ -2,4 +2,24 @@
     <string name="app_name">SmartWallet</string>
     <string name="action_settings">Settings</string>
     <string name="dash">DASH?</string>
+    <string name="title_activity_money">MoneyActivity</string>
+    <string name="description_default">Apple</string>
+    <string name="money_default">1000</string>
+    <string name="date_default">1996.12.07</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="labeldescription">Description</string>
+    <string name="labelType">Type</string>
+    <string name="labelAmount">Amount</string>
+    <string name="btnOk">OK</string>
+    <string name="btnCancel">Cancel</string>
+    <string name="title">My Finances</string>
+    <string-array name="types_array">
+        <item>Salary</item>
+        <item>Pocket Money</item>
+        <item>Other</item>
+        <item>Groceries</item>
+    </string-array>
+
 </resources>
