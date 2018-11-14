@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
 
         // THIS IS THE ORIGINAL DATA YOU WANT TO PLOT
         // TODO remove this
-        Money.deleteAll(Money.class);
+        //Money.deleteAll(Money.class);
 
         if(Money.count(Money.class, null, null) == 0)
         {
@@ -183,6 +183,8 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         chart.setVisibleXRangeMaximum(10);
         chart.setVisibleXRangeMinimum(2);
         chart.moveViewToX(Float.MAX_VALUE);
+        // TODO animation not working dunno why.
+        chart.animateXY(1000, 1000);
     }
 
     private void setData(List<Data> dataList) {
@@ -226,7 +228,7 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
 
     private void addMoney(Money money)
     {
-
+        money.save();
         BarEntry entry = new BarEntry(chart.getBarData().getEntryCount(), money.money_);
         BarDataSet set = (BarDataSet) chart.getData().getDataSetByIndex(0);
         set.addEntry(entry);
