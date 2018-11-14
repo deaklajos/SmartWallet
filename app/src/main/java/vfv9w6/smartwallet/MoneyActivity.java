@@ -51,6 +51,5 @@ public class MoneyActivity extends AppCompatActivity {
                 imageView.setImageResource(R.drawable.other_cropped_resized);
                 break;
         }
-        //imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
     }
 }

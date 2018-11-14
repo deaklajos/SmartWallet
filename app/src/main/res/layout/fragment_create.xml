@@ -47,21 +47,9 @@
 
     </TableRow>
 
-    <TableRow>
-
-        <Button
-            android:id="@+id/btnOK"
-            android:layout_width="wrap_content"
-            android:layout_column="1"
-            android:gravity="end"
-            android:text="@string/btnOk" />
-
-        <Button
-            android:id="@+id/btnCancelCreateTodo"
-            android:layout_width="wrap_content"
-            android:gravity="left"
-            android:text="@string/btnCancel" />
-
-    </TableRow>
-
+    <!--TODO create nice button :D-->
+    <Button
+        android:id="@+id/btnOK"
+        android:layout_width="match_parent"
+        android:text="@string/btnOk" />
 </TableLayout>
