@@ -1,11 +1,14 @@
 package vfv9w6.smartwallet;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,7 +20,10 @@ import com.github.mikephil.charting.components.YAxis;
 import com.github.mikephil.charting.data.BarData;
 import com.github.mikephil.charting.data.BarDataSet;
 import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -29,11 +35,12 @@ import java.util.Random;
 import vfv9w6.smartwallet.fragment.CreateFragment;
 import vfv9w6.smartwallet.model.Money;
 
-public class MainActivity extends AppCompatActivity implements CreateFragment.AddListener {
+public class MainActivity extends AppCompatActivity implements CreateFragment.AddListener, OnChartValueSelectedListener {
 
     private BarChart chart;
     private int greenColor;
     private int redColor;
+    public static final String MONEY_KEY = "MONEY";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
     private void InitChart() {
         // Chart contents
         chart = findViewById(R.id.chart1);
+        chart.setOnChartValueSelectedListener(this);
         chart.setBackgroundColor(android.R.attr.background);
         chart.setExtraTopOffset(-30f);
         chart.setExtraBottomOffset(10f);
@@ -244,6 +252,36 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
     public void onAdd(Money money) {
         addMoney(money);
     }
+
+    /**
+     * Called when a value has been selected inside the chart.
+     *
+     * @param e The selected Entry
+     * @param h The corresponding highlight object that contains information
+     */
+    @Override
+    public void onValueSelected(Entry e, Highlight h) {
+        long count = Money.count(Money.class, null, null);
+        Log.e("E","TRIGGERED CLICK ON: " + ((int)e.getX() + 1));
+        Log.e("E","COUNT OF RECORDS: " + count);
+        Money money = Money.findById(Money.class, (int)e.getX() + 1);
+        money = Money.listAll(Money.class).get((int)e.getX());
+        if(money == null)
+        {
+            Log.e("E","MONEY IS null!!!");
+            return;
+        }
+
+        Intent intent = new Intent(getBaseContext(), MoneyActivity.class);
+        intent.putExtra(MONEY_KEY, money);
+        startActivity(intent);
+    }
+
+    /**
+     * Called when nothing has been selected or an "un-select" has been made.
+     */
+    @Override
+    public void onNothingSelected() { }
 
     /**
      * Demo class representing data.
