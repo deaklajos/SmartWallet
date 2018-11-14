@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.text.DateFormat;
@@ -20,19 +21,36 @@ public class MoneyActivity extends AppCompatActivity {
 
         Intent i = getIntent();
         Money money = i.getParcelableExtra(MainActivity.MONEY_KEY);
-        TextView amountTextView =  findViewById(R.id.money);
+        TextView amountTextView = findViewById(R.id.money);
 
         amountTextView.setText(Integer.toString(money.money_));
-        if(money.money_ > 0)
+        if (money.money_ > 0)
             amountTextView.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorGraphGreen, null));
         else
             amountTextView.setTextColor(ResourcesCompat.getColor(getResources(), R.color.colorGraphRed, null));
 
-        TextView descriptionTextView =  findViewById(R.id.description);
+        TextView descriptionTextView = findViewById(R.id.description);
         descriptionTextView.setText(money.description_);
 
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
-        TextView dateTextView =  findViewById(R.id.date);
+        TextView dateTextView = findViewById(R.id.date);
         dateTextView.setText(df.format(money.date_));
+
+        ImageView imageView = findViewById(R.id.image);
+        switch (money.type_) {
+            case GROCERIES:
+                imageView.setImageResource(R.drawable.groceries_cropped_resized);
+                break;
+            case SALARY:
+                imageView.setImageResource(R.drawable.salary_cropped_resized);
+                break;
+            case POCKET_MONEY:
+                imageView.setImageResource(R.drawable.pocket_money_cropped_resized);
+                break;
+            case OTHER:
+                imageView.setImageResource(R.drawable.other_cropped_resized);
+                break;
+        }
+        //imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
     }
 }

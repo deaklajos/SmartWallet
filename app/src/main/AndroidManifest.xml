@@ -13,11 +13,10 @@
         tools:replace="android:icon"
         android:name="com.orm.SugarApp">
 
-        <!--This code causes crash, but SugarOrm needs it.-->
-        <!--<meta-data android:name="DATABASE" android:value="my_money_db.db" />-->
-        <!--<meta-data android:name="VERSION" android:value="2" />-->
-        <!--<meta-data android:name="QUERY_LOG" android:value="true" />-->
-        <!--<meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="com.example" />-->
+        <meta-data android:name="DATABASE" android:value="smartwallet.db" />
+        <meta-data android:name="VERSION" android:value="2" />
+        <meta-data android:name="QUERY_LOG" android:value="true" />
+        <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="vfv9w6.smartwallet" />
 
         <activity
             android:name=".MainActivity"

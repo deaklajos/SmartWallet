@@ -65,7 +65,7 @@ public class CreateFragment extends DialogFragment {
                 int position = ((Spinner)view.findViewById(R.id.spinnerType)).getSelectedItemPosition();
                 switch (position)
                 {
-                    case 0: type = Money.Type.GROCERIES;
+                    case 0: type = Money.Type.SALARY;
                         break;
                     case 1: type = Money.Type.POCKET_MONEY;
                         break;

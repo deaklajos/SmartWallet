@@ -71,6 +71,15 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+
+        //TODO maybe enough to just disable selection.
+        // Deselect element
+        chart.highlightValue(1, -1);
+    }
+
+    @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
@@ -261,11 +270,12 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
      */
     @Override
     public void onValueSelected(Entry e, Highlight h) {
+        //TODO clean logs
         long count = Money.count(Money.class, null, null);
         Log.e("E","TRIGGERED CLICK ON: " + ((int)e.getX() + 1));
         Log.e("E","COUNT OF RECORDS: " + count);
         Money money = Money.findById(Money.class, (int)e.getX() + 1);
-        money = Money.listAll(Money.class).get((int)e.getX());
+        Log.e("E","ID IS: " + money.getId());
         if(money == null)
         {
             Log.e("E","MONEY IS null!!!");
