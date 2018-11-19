@@ -3,7 +3,6 @@ package vfv9w6.smartwallet;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
@@ -24,6 +23,9 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
+import com.orm.SugarContext;
+import com.orm.SugarDb;
+import com.orm.util.NamingHelper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -41,6 +43,7 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
     private int greenColor;
     private int redColor;
     public static final String MONEY_KEY = "MONEY";
+    private List<Money> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,8 +51,8 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         setContentView(R.layout.activity_main);
         greenColor = ResourcesCompat.getColor(getResources(), R.color.colorGraphGreen, null);
         redColor = ResourcesCompat.getColor(getResources(), R.color.colorGraphRed, null);
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
+//        Toolbar toolbar = findViewById(R.id.toolbar);
+//        setSupportActionBar(toolbar);
 
         //setTitle("BarChartPositiveNegative");
 
@@ -57,12 +60,8 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-//                        .setAction("Action", null).show();
                 CreateFragment fragment = new CreateFragment();
                 fragment.show(getFragmentManager(), "Create");
-                //Intent intent = new Intent(getBaseContext(), MoneyActivity.class);
-                //getBaseContext().startActivity(intent);
             }
         });
 
@@ -77,28 +76,6 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         //TODO maybe enough to just disable selection.
         // Deselect element
         chart.highlightValue(1, -1);
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-
-        return super.onOptionsItemSelected(item);
     }
 
     private void InitChart() {
@@ -147,13 +124,14 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
 
         // THIS IS THE ORIGINAL DATA YOU WANT TO PLOT
         // TODO remove this
+        // TODO FIX INDEXING DAMN!!!
         //Money.deleteAll(Money.class);
 
         if(Money.count(Money.class, null, null) == 0)
         {
             //TODO do date
             Date today = new Date();
-            today = new Date(today.getTime() - (1000 * 60 * 60 * 24 * 30));
+            today = new Date(today.getTime() - ((long)1000 * 60 * 60 * 24 * 30 * 3));
 
             Random rnd = new Random();
             for(int i = 0; i < 30; i++)
@@ -177,14 +155,15 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
             }
         }
 
-        List<Money> list = Money.listAll(Money.class);
+        // TODO move to onCreate()
+        list = Money.listAll(Money.class);
         final List<Data> data = new ArrayList<>();
         float i = 0f;
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
 
         for (Money money: list)
         {
-            data.add(new Data(i++, money.money_, df.format(money.date_)));
+            data.add(new Data(i++, money.money, df.format(money.date)));
         }
         // TODO format axis
         xAxis.setValueFormatter(new IAxisValueFormatter() {
@@ -246,13 +225,32 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
     private void addMoney(Money money)
     {
         money.save();
-        BarEntry entry = new BarEntry(chart.getBarData().getEntryCount(), money.money_);
+        list.add(money);
+        BarEntry entry = new BarEntry(chart.getBarData().getEntryCount(), money.money);
         BarDataSet set = (BarDataSet) chart.getData().getDataSetByIndex(0);
         set.addEntry(entry);
-        if (money.money_ >= 0)
+        if (money.money >= 0)
             set.addColor(greenColor);
         else
             set.addColor(redColor);
+        chart.getData().notifyDataChanged();
+        chart.notifyDataSetChanged();
+    }
+
+    public void deleteMoney(Money money)
+    {
+        Money.delete(money);
+        int index = list.indexOf(money);
+        list.remove(money);
+        BarDataSet set = (BarDataSet) chart.getData().getDataSetByIndex(0);
+        set.removeEntry(index);
+        set.getColors().remove(index);
+        for (int i = index; i < set.getEntryCount(); i++)
+        {
+            Entry entry = set.getEntryForIndex(i);
+            entry.setX(entry.getX() - 1);
+        }
+        set.notifyDataSetChanged();
         chart.getData().notifyDataChanged();
         chart.notifyDataSetChanged();
     }
@@ -270,21 +268,21 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
      */
     @Override
     public void onValueSelected(Entry e, Highlight h) {
-        //TODO clean logs
-        long count = Money.count(Money.class, null, null);
-        Log.e("E","TRIGGERED CLICK ON: " + ((int)e.getX() + 1));
-        Log.e("E","COUNT OF RECORDS: " + count);
-        Money money = Money.findById(Money.class, (int)e.getX() + 1);
-        Log.e("E","ID IS: " + money.getId());
-        if(money == null)
-        {
-            Log.e("E","MONEY IS null!!!");
-            return;
-        }
+
+        BarDataSet set = (BarDataSet) chart.getData().getDataSetByIndex(0);
+        int index = set.getEntryIndex(e);
+        Money money = list.get(index);
 
         Intent intent = new Intent(getBaseContext(), MoneyActivity.class);
         intent.putExtra(MONEY_KEY, money);
-        startActivity(intent);
+        startActivityForResult(intent, index);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == MoneyActivity.RESULT_OK)
+            deleteMoney(list.get(requestCode));
     }
 
     /**

@@ -2,8 +2,6 @@ package vfv9w6.smartwallet.fragment;
 
 import android.app.DialogFragment;
 import android.content.Context;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -37,43 +35,45 @@ public class CreateFragment extends DialogFragment {
 // Apply the adapter to the spinner
         spinner.setAdapter(adapter);
 
-        view.findViewById(R.id.btnOK).setOnClickListener(new View.OnClickListener()
-        {
+        view.findViewById(R.id.btnOK).setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 //TODO latlong
                 Double lat = null;
                 Double lon = null;
-                EditText amountEditText =  view.findViewById(R.id.amount);
-                EditText descriptionEditText =  view.findViewById(R.id.add_description);
+                EditText amountEditText = view.findViewById(R.id.amount);
+                EditText descriptionEditText = view.findViewById(R.id.add_description);
 
                 String description = descriptionEditText.getText().toString();
                 String amountString = amountEditText.getText().toString();
 
-                if(description.equals("")) {
+                if (description.equals("")) {
                     descriptionEditText.setError("Description cannot be empty!");
                     return;
                 }
-                if(amountString.equals("")) {
+                if (amountString.equals("")) {
                     amountEditText.setError("Amount cannot be empty!");
                     return;
                 }
 
                 int amount = Integer.parseInt(amountString);
                 Money.Type type;
-                int position = ((Spinner)view.findViewById(R.id.spinnerType)).getSelectedItemPosition();
-                switch (position)
-                {
-                    case 0: type = Money.Type.SALARY;
+                int position = ((Spinner) view.findViewById(R.id.spinnerType)).getSelectedItemPosition();
+                switch (position) {
+                    case 0:
+                        type = Money.Type.SALARY;
                         break;
-                    case 1: type = Money.Type.POCKET_MONEY;
+                    case 1:
+                        type = Money.Type.POCKET_MONEY;
                         break;
-                    case 2: type = Money.Type.OTHER;
+                    case 2:
+                        type = Money.Type.OTHER;
                         break;
-                    case 3: type = Money.Type.GROCERIES;
+                    case 3:
+                        type = Money.Type.GROCERIES;
                         break;
-                    default: type = Money.Type.OTHER;
+                    default:
+                        type = Money.Type.OTHER;
                         break;
                 }
                 Money money = new Money(amount, type, description, new Date(), lat, lon);

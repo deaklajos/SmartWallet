@@ -10,25 +10,23 @@ import java.util.Date;
 public class Money extends SugarRecord implements Parcelable {
 
     public Money() {
-
     }
 
-    public Money(int money, Type type, String description, Date date, Double latitude, Double longitude)
-    {
-        money_ = money;
-        type_ = type;
-        description_ = description;
-        date_ = date;
-        latitude_ = latitude;
-        longitude_ = longitude;
+    public Money(int money, Type type, String description, Date date, Double latitude, Double longitude) {
+        this.money = money;
+        this.type = type;
+        this.description = description;
+        this.date = date;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
-    public int money_;
-    public Type type_;
-    public String description_;
-    public Date date_;
-    public Double latitude_;
-    public Double longitude_;
+    public int money;
+    public Type type;
+    public String description;
+    public Date date;
+    public Double latitude;
+    public Double longitude;
 
     @Override
     public int describeContents() {
@@ -37,12 +35,12 @@ public class Money extends SugarRecord implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeInt(money_);
-        parcel.writeString(type_.name());
-        parcel.writeString(description_);
-        parcel.writeSerializable(date_);
-        parcel.writeValue(latitude_);
-        parcel.writeValue(longitude_);
+        parcel.writeInt(money);
+        parcel.writeString(type.name());
+        parcel.writeString(description);
+        parcel.writeSerializable(date);
+        parcel.writeValue(latitude);
+        parcel.writeValue(longitude);
     }
 
     // this is used to regenerate your object. All Parcelables must have a CREATOR that implements these two methods
@@ -58,12 +56,12 @@ public class Money extends SugarRecord implements Parcelable {
 
     // example constructor that takes a Parcel and gives you an object populated with it's values
     private Money(Parcel in) {
-        money_ = in.readInt();
-        type_ = Type.valueOf(in.readString());
-        description_ = in.readString();
-        date_ = (Date) in.readSerializable();
-        latitude_ = in.readDouble();
-        longitude_ = in.readDouble();
+        money = in.readInt();
+        type = Type.valueOf(in.readString());
+        description = in.readString();
+        date = (Date) in.readSerializable();
+        latitude = in.readDouble();
+        longitude = in.readDouble();
     }
 
     public enum Type {
