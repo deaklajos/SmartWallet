@@ -23,5 +23,6 @@
     </string-array>
     <string name="title_activity_maps">Map</string>
     <string name="googleERROR">GooglePlayServices not available!</string>
+    <string name="btnAddLocation">Add Location</string>
 
 </resources>

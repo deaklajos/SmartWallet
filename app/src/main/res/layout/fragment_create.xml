@@ -50,8 +50,7 @@
     <Button
         android:id="@+id/btnAddLocation"
         android:layout_width="match_parent"
-        android:text="@string/btnOk" />
-    <!--TODO create nice button :D-->
+        android:text="@string/btnAddLocation" />
     <Button
         android:id="@+id/btnOK"
         android:layout_width="match_parent"
