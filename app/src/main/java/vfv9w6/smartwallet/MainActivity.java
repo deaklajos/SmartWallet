@@ -114,9 +114,8 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
 
         if(Money.count(Money.class, null, null) == 0)
         {
-            //TODO do date
             Date today = new Date();
-            today = new Date(today.getTime() - ((long)1000 * 60 * 60 * 24 * 30 * 3));
+            today = new Date(today.getTime() - ((long)1000 * 60 * 60 * 24 * 30 * (3 + 1)));
 
             Random rnd = new Random();
             for(int i = 0; i < 30; i++)
