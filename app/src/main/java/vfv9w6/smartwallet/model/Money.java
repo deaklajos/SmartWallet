@@ -60,8 +60,8 @@ public class Money extends SugarRecord implements Parcelable {
         type = Type.valueOf(in.readString());
         description = in.readString();
         date = (Date) in.readSerializable();
-        latitude = in.readDouble();
-        longitude = in.readDouble();
+        latitude = (Double) in.readValue(Double.class.getClassLoader());
+        longitude = (Double) in.readValue(Double.class.getClassLoader());
     }
 
     public enum Type {
