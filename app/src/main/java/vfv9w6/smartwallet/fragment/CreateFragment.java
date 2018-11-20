@@ -2,6 +2,7 @@ package vfv9w6.smartwallet.fragment;
 
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,14 +10,28 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
+
+import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
+import com.google.android.gms.common.GooglePlayServicesRepairableException;
+import com.google.android.gms.location.places.Place;
+import com.google.android.gms.location.places.ui.PlacePicker;
+import com.google.android.gms.maps.model.LatLng;
 
 import java.util.Date;
 
 import vfv9w6.smartwallet.R;
 import vfv9w6.smartwallet.model.Money;
 
+import static android.app.Activity.RESULT_OK;
+
 public class CreateFragment extends DialogFragment {
     private AddListener mListener;
+
+
+    private static int PLACE_PICKER_REQUEST = 1;
+    private Double lat = null;
+    private Double lon = null;
 
     public CreateFragment() {
         // Required empty public constructor
@@ -38,9 +53,6 @@ public class CreateFragment extends DialogFragment {
         view.findViewById(R.id.btnOK).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO latlong
-                Double lat = null;
-                Double lon = null;
                 EditText amountEditText = view.findViewById(R.id.amount);
                 EditText descriptionEditText = view.findViewById(R.id.add_description);
 
@@ -82,6 +94,24 @@ public class CreateFragment extends DialogFragment {
             }
         });
 
+        view.findViewById(R.id.btnAddLocation).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
+                try {
+                    startActivityForResult(builder.build(getActivity()), PLACE_PICKER_REQUEST);
+                } catch (GooglePlayServicesRepairableException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), R.string.googleERROR, Toast.LENGTH_LONG).show();
+
+                } catch (GooglePlayServicesNotAvailableException e) {
+                    e.printStackTrace();
+                    Toast.makeText(getActivity(), R.string.googleERROR, Toast.LENGTH_LONG).show();
+                }
+            }
+        });
+
         return view;
     }
 
@@ -94,6 +124,19 @@ public class CreateFragment extends DialogFragment {
             throw new RuntimeException(context.toString()
                     + " must implement AddListener");
         }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PLACE_PICKER_REQUEST) {
+            if (resultCode == RESULT_OK) {
+                LatLng latLng = PlacePicker.getPlace(getActivity(), data).getLatLng();
+                lat = latLng.latitude;
+                lon = latLng.longitude;
+            }
+        }
+
     }
 
     @Override

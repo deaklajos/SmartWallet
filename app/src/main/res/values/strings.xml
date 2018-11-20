@@ -21,5 +21,7 @@
         <item>Other</item>
         <item>Groceries</item>
     </string-array>
+    <string name="title_activity_maps">Map</string>
+    <string name="googleERROR">GooglePlayServices not available!</string>
 
 </resources>

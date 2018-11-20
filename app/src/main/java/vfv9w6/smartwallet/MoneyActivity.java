@@ -10,14 +10,23 @@ import android.view.MenuItem;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import vfv9w6.smartwallet.model.Money;
 
-public class MoneyActivity extends AppCompatActivity {
+public class MoneyActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     public static final int RESULT_OK = 1;
+    private GoogleMap mMap;
+    private LatLng latLng = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +68,14 @@ public class MoneyActivity extends AppCompatActivity {
                 imageView.setImageResource(R.drawable.other_cropped_resized);
                 break;
         }
+
+        if(money.latitude != null && money.longitude != null)
+            latLng = new LatLng(money.latitude, money.longitude);
+
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
     }
 
     @Override
@@ -85,5 +102,17 @@ public class MoneyActivity extends AppCompatActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        if(latLng != null)
+        {
+            mMap.addMarker(new MarkerOptions().position(latLng));
+            mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
+        }
+
     }
 }
