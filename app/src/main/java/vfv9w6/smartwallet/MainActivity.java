@@ -6,10 +6,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.content.res.ResourcesCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 
 import com.github.mikephil.charting.charts.BarChart;
@@ -23,9 +19,6 @@ import com.github.mikephil.charting.data.Entry;
 import com.github.mikephil.charting.formatter.IAxisValueFormatter;
 import com.github.mikephil.charting.highlight.Highlight;
 import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
-import com.orm.SugarContext;
-import com.orm.SugarDb;
-import com.orm.util.NamingHelper;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -51,10 +44,6 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         setContentView(R.layout.activity_main);
         greenColor = ResourcesCompat.getColor(getResources(), R.color.colorGraphGreen, null);
         redColor = ResourcesCompat.getColor(getResources(), R.color.colorGraphRed, null);
-//        Toolbar toolbar = findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
-
-        //setTitle("BarChartPositiveNegative");
 
         FloatingActionButton fab = findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +54,8 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
             }
         });
 
+        // Load from database
+        list = Money.listAll(Money.class);
 
         InitChart();
     }
@@ -73,7 +64,6 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
     protected void onResume() {
         super.onResume();
 
-        //TODO maybe enough to just disable selection.
         // Deselect element
         chart.highlightValue(1, -1);
     }
@@ -122,11 +112,6 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         chart.getAxisRight().setEnabled(false);
         chart.getLegend().setEnabled(false);
 
-        // THIS IS THE ORIGINAL DATA YOU WANT TO PLOT
-        // TODO remove this
-        // TODO FIX INDEXING DAMN!!!
-        //Money.deleteAll(Money.class);
-
         if(Money.count(Money.class, null, null) == 0)
         {
             //TODO do date
@@ -155,8 +140,6 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
             }
         }
 
-        // TODO move to onCreate()
-        list = Money.listAll(Money.class);
         final List<Data> data = new ArrayList<>();
         float i = 0f;
         DateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -179,7 +162,6 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         chart.setVisibleXRangeMaximum(10);
         chart.setVisibleXRangeMinimum(2);
         chart.moveViewToX(Float.MAX_VALUE);
-        // TODO animation not working dunno why.
         chart.animateXY(1000, 1000);
     }
 
@@ -260,12 +242,6 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         addMoney(money);
     }
 
-    /**
-     * Called when a value has been selected inside the chart.
-     *
-     * @param e The selected Entry
-     * @param h The corresponding highlight object that contains information
-     */
     @Override
     public void onValueSelected(Entry e, Highlight h) {
 
@@ -285,15 +261,9 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
             deleteMoney(list.get(requestCode));
     }
 
-    /**
-     * Called when nothing has been selected or an "un-select" has been made.
-     */
     @Override
     public void onNothingSelected() { }
 
-    /**
-     * Demo class representing data.
-     */
     private class Data {
 
         final String xAxisValue;
