@@ -130,6 +130,7 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
                         47.0,19.0);
 
                 pocket_money.save();
+                list.add(pocket_money);
 
                 for(int j = 0; j < 3; j++)
                 {
@@ -139,6 +140,7 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
                             47.0,19.0);
 
                     spend.save();
+                    list.add(spend);
                 }
             }
         }
