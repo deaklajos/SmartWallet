@@ -27,6 +27,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import vfv9w6.smartwallet.asynctask.LoadDataBaseAsyncTask;
 import vfv9w6.smartwallet.fragment.CreateFragment;
 import vfv9w6.smartwallet.model.Money;
 
@@ -37,6 +38,10 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
     private int redColor;
     public static final String MONEY_KEY = "MONEY";
     private List<Money> list;
+
+    public void setList(List<Money> list) {
+        this.list = list;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,10 +59,10 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
             }
         });
 
-        // Load from database
-        list = Money.listAll(Money.class);
+        chart = findViewById(R.id.chart1);
 
-        InitChart();
+        // Load possibly large amount of data asynchronously.
+        new LoadDataBaseAsyncTask(this).execute();
     }
 
     @Override
@@ -68,9 +73,8 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         chart.highlightValue(1, -1);
     }
 
-    private void InitChart() {
+    public void initChart() {
         // Chart contents
-        chart = findViewById(R.id.chart1);
         chart.setOnChartValueSelectedListener(this);
         chart.setBackgroundColor(android.R.attr.background);
         chart.setExtraTopOffset(-30f);
@@ -112,7 +116,7 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         chart.getAxisRight().setEnabled(false);
         chart.getLegend().setEnabled(false);
 
-        if(Money.count(Money.class, null, null) == 0)
+        if(list.size() == 0)
         {
             Date today = new Date();
             today = new Date(today.getTime() - ((long)1000 * 60 * 60 * 24 * 30 * (3 + 1)));
@@ -205,7 +209,10 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
 
     private void addMoney(Money money)
     {
+        // If a single element insert takes a very long time,
+        // then the problems may be somewhere else.
         money.save();
+
         list.add(money);
         BarEntry entry = new BarEntry(chart.getBarData().getEntryCount(), money.money);
         BarDataSet set = (BarDataSet) chart.getData().getDataSetByIndex(0);
@@ -220,7 +227,10 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
 
     public void deleteMoney(Money money)
     {
+        // If a single element delete takes a very long time,
+        // then the problems may be somewhere else.
         Money.delete(money);
+
         int index = list.indexOf(money);
         list.remove(money);
         BarDataSet set = (BarDataSet) chart.getData().getDataSetByIndex(0);
