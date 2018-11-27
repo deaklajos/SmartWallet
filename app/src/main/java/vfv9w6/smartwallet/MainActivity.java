@@ -167,7 +167,7 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         chart.setVisibleXRangeMaximum(10);
         chart.setVisibleXRangeMinimum(2);
         chart.moveViewToX(Float.MAX_VALUE);
-        chart.animateXY(1000, 1000);
+        chart.animateY(250);
     }
 
     private void setData(List<Data> dataList) {
