@@ -27,7 +27,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Random;
 
+import vfv9w6.smartwallet.asynctask.DeleteMoneyAsyncTask;
 import vfv9w6.smartwallet.asynctask.LoadDataBaseAsyncTask;
+import vfv9w6.smartwallet.asynctask.SaveMoneyAsyncTask;
 import vfv9w6.smartwallet.fragment.CreateFragment;
 import vfv9w6.smartwallet.model.Money;
 
@@ -211,9 +213,9 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
 
     private void addMoney(Money money)
     {
-        // If a single element insert takes a very long time,
-        // then the problems may be somewhere else.
-        money.save();
+        // Save asynchronously, we do not need the DB until next start.
+        SaveMoneyAsyncTask task = new SaveMoneyAsyncTask();
+        task.execute(money);
 
         list.add(money);
         BarEntry entry = new BarEntry(chart.getBarData().getEntryCount(), money.money);
@@ -229,9 +231,9 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
 
     public void deleteMoney(Money money)
     {
-        // If a single element delete takes a very long time,
-        // then the problems may be somewhere else.
-        Money.delete(money);
+        // Delete asynchronously, we do not need the DB until next start.
+        DeleteMoneyAsyncTask task = new DeleteMoneyAsyncTask();
+        task.execute(money);
 
         int index = list.indexOf(money);
         list.remove(money);
