@@ -118,34 +118,35 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         chart.getAxisRight().setEnabled(false);
         chart.getLegend().setEnabled(false);
 
-        if(list.size() == 0)
-        {
-            Date today = new Date();
-            today = new Date(today.getTime() - ((long)1000 * 60 * 60 * 24 * 30 * (3 + 1)));
-
-            Random rnd = new Random();
-            for(int i = 0; i < 30; i++)
-            {
-                Money pocket_money = new Money(5000 + rnd.nextInt(1000),
-                        Money.Type.POCKET_MONEY, "Money from home",
-                        today = new Date(today.getTime() + (1000 * 60 * 60 * 24)),
-                        47.0,19.0);
-
-                pocket_money.save();
-                list.add(pocket_money);
-
-                for(int j = 0; j < 3; j++)
-                {
-                    Money spend = new Money(-1000 - rnd.nextInt(1000),
-                            Money.Type.GROCERIES, "Food",
-                            today = new Date(today.getTime() + (1000 * 60 * 60 * 24)),
-                            47.0,19.0);
-
-                    spend.save();
-                    list.add(spend);
-                }
-            }
-        }
+        //TODO Sample data generator, for Házifaladat presentation
+//        if(list.size() == 0)
+//        {
+//            Date today = new Date();
+//            today = new Date(today.getTime() - ((long)1000 * 60 * 60 * 24 * 30 * (3 + 1)));
+//
+//            Random rnd = new Random();
+//            for(int i = 0; i < 30; i++)
+//            {
+//                Money pocket_money = new Money(5000 + rnd.nextInt(1000),
+//                        Money.Type.POCKET_MONEY, "Money from home",
+//                        today = new Date(today.getTime() + (1000 * 60 * 60 * 24)),
+//                        47.0, 19.0);
+//
+//                pocket_money.save();
+//                list.add(pocket_money);
+//
+//                for(int j = 0; j < 3; j++)
+//                {
+//                    Money spend = new Money(-1000 - rnd.nextInt(1000),
+//                            Money.Type.GROCERIES, "Food",
+//                            today = new Date(today.getTime() + (1000 * 60 * 60 * 24)),
+//                            47.0, 19.0);
+//
+//                    spend.save();
+//                    list.add(spend);
+//                }
+//            }
+//        }
 
         final List<Data> data = new ArrayList<>();
         float i = 0f;
@@ -155,20 +156,24 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         {
             data.add(new Data(i++, money.money, df.format(money.date)));
         }
-        // TODO format axis
+
+        // TODO format axis, but it would be hard and it is not part of the Házifeladat, just a cool feature it looks good if you zoom in or go into landscape mode
         xAxis.setValueFormatter(new IAxisValueFormatter() {
             @Override
             public String getFormattedValue(float value, AxisBase axis) {
-                return data.get(Math.min(Math.max((int) value, 0), data.size()-1)).xAxisValue;
+                if(data.size() > 0)
+                    return data.get(Math.min(Math.max((int) value, 0), data.size()-1)).xAxisValue;
+                else return "";
             }
         });
 
         setData(data);
-
         // Set range and start position.
-        chart.setVisibleXRangeMaximum(10);
-        chart.setVisibleXRangeMinimum(2);
-        chart.moveViewToX(Float.MAX_VALUE);
+
+        if(list.size() > 10) {
+            chart.setVisibleXRangeMaximum(10);
+            chart.moveViewToX(Float.MAX_VALUE);
+        }
         chart.animateY(250);
     }
 
@@ -218,6 +223,7 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         task.execute(money);
 
         list.add(money);
+
         BarEntry entry = new BarEntry(chart.getBarData().getEntryCount(), money.money);
         BarDataSet set = (BarDataSet) chart.getData().getDataSetByIndex(0);
         set.addEntry(entry);
@@ -226,7 +232,14 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         else
             set.addColor(redColor);
         chart.getData().notifyDataChanged();
+        chart.getBarData().notifyDataChanged();
         chart.notifyDataSetChanged();
+
+        // if this these values are set without elements, nothing is shown.
+        if(list.size() == 11) {
+            chart.setVisibleXRangeMaximum(10);
+            chart.moveViewToX(Float.MAX_VALUE);
+        }
     }
 
     public void deleteMoney(Money money)
@@ -247,6 +260,7 @@ public class MainActivity extends AppCompatActivity implements CreateFragment.Ad
         }
         set.notifyDataSetChanged();
         chart.getData().notifyDataChanged();
+        chart.getBarData().notifyDataChanged();
         chart.notifyDataSetChanged();
     }
 
